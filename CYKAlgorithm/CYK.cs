@@ -11,6 +11,8 @@ namespace CYKAlgorithm
 
 			if ((Input != null && Input.Length > 0) && Productions != null && Productions.Count > 0)
 			{
+				long offset = 0L;
+
 				int InputLength = Input.Length;
 
 				List<CYKNode>[,] Matrix = new List<CYKNode>[InputLength, InputLength];
@@ -24,11 +26,11 @@ namespace CYKAlgorithm
 						if (row == 0)
 						{
 							Matrix[row, column].AddRange(
-								CYKNode.ToNodes(
 								from p in Productions
 								where p.Type == ProductionType.OneTerminal
 								&& p.Terminal == Input[column]
-								select p)
+								select new CYKNode(p,
+									(offset += Input[column].Length) - Input[column].Length)
 							);
 							if (Matrix[row, column].Count == 0)
 							{
