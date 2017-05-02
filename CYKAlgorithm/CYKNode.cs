@@ -5,16 +5,6 @@ namespace CYKAlgorithm
 {
 	public class CYKNode
 	{
-		public static IEnumerable<CYKNode> ToNodes(IEnumerable<CNFProduction> Productions)
-		{
-			foreach (CNFProduction p in Productions)
-			{
-				if (p != null)
-				{
-					yield return new CYKNode(p);
-				}
-			}
-		}
 		public virtual long Offset { get; protected set; } = 0L;
 
 		public virtual CNFProduction Production { get; protected set; }
