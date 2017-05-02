@@ -30,8 +30,8 @@ namespace CYKAlgorithm
 
 			//while ((Input = Console.ReadLine()) != null && Input.Length > 0)
 			{
-				List<CYKNode> Finals = CYK.Parse(Input.Split(' '), Productions);
-				if (Finals.Count>0)
+				var ret = CYK.Parse(Input.Split(' '), Productions);
+				if (ret.Accepted)
 				{
 					Console.WriteLine("Input is accepted");
 				}

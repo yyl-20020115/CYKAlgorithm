@@ -5,9 +5,10 @@ namespace CYKAlgorithm
 {
 	public static partial class CYK
 	{
-		public static List<CYKNode> Parse(string[] Input, List<CNFProduction> Productions)
+		public static (List<CYKNode> Nodes, bool Accepted) Parse(string[] Input, List<CNFProduction> Productions)
 		{
-			List<CYKNode> Finals = new List<CYKNode>();
+			(List<CYKNode> Nodes, bool Accepted) ret = (null, false);
+
 			if ((Input != null && Input.Length > 0) && Productions != null && Productions.Count > 0)
 			{
 				int InputLength = Input.Length;
@@ -31,7 +32,7 @@ namespace CYKAlgorithm
 							);
 							if (Matrix[row, column].Count == 0)
 							{
-								return Finals;
+								return ret;
 							}
 						}
 					}
@@ -53,18 +54,35 @@ namespace CYKAlgorithm
 							List<CYKNode> B = Matrix[i1, j1];
 							List<CYKNode> C = Matrix[i2, j2];
 							List<CYKNode> M = Matrix[row, column];
+							if(B.Count == 0 && C.Count == 0)
+							{
 
-							M.AddRange(
-								from b in B
-								from c in C
-								from p in Productions
-								where
-								p.Type == ProductionType.TwoNonterminals
-								&& p.Head == b.Target
-								&& p.Tail == c.Target
-								select new CYKNode(p, b, c)
-								);
-
+							}
+							else if (B.Count > 0 && C.Count > 0)
+							{
+								M.AddRange(
+									from b in B
+									from c in C
+									from p in Productions
+									where
+									p.Type == ProductionType.TwoNonterminals
+									&& p.Head == b.Target
+									&& p.Tail == c.Target
+									select new CYKNode(p, b, c)
+									);
+							}
+							else
+							{
+								List<CYKNode> D = B.Count > 0 ? B : C;
+								M.AddRange(
+									from d in D
+									from p in Productions
+									where
+									p.Type == ProductionType.OneNonterminal
+									&& p.Single == d.Target
+									select new CYKNode(p, d)
+									);
+							}
 							i1--;
 							i2++;
 							j2--;
@@ -72,16 +90,14 @@ namespace CYKAlgorithm
 					}
 				}
 
-				Finals = Matrix[InputLength - 1, 0];
-				if (!Finals
+				ret.Nodes = Matrix[InputLength - 1, 0];
+				if (ret.Nodes
 					.Any(node => node.Production == Productions[0]))
 				{
-					Finals.Clear();
+					ret.Accepted = true;
 				}
 			}
-			return Finals;
+			return ret;
 		}
-
-
 	}
 }

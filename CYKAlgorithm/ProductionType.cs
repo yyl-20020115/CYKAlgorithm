@@ -4,6 +4,7 @@
 	{
 		Unknown = 0,
 		OneTerminal =1,
-		TwoNonterminals = 2
+		TwoNonterminals = 2,
+		OneNonterminal = 3,
 	}
 }
