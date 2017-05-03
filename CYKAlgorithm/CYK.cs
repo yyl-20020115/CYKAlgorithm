@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace CYKAlgorithm
 {
-	public static partial class CYK
+	public class CYK
 	{
 		public static (List<CYKNode> Nodes, bool Accepted) Parse(string[] Input, List<CNFProduction> Productions)
 		{
@@ -39,7 +39,14 @@ namespace CYKAlgorithm
 						}
 					}
 				}
-
+				/**
+				 *    
+				 * row 0 *  *  *  *  *  *  * 
+				 * row 1 *  *  *  *  *  *
+				 * row 2 *  *  *  *  *
+				 * row 3 *  *  *  *
+				 * 
+				 */
 				for (int row = 1; row < InputLength; row++)
 				{
 					for (int column = 0; column < InputLength - row; column++)
@@ -56,7 +63,12 @@ namespace CYKAlgorithm
 							List<CYKNode> B = Matrix[i1, j1];
 							List<CYKNode> C = Matrix[i2, j2];
 							List<CYKNode> M = Matrix[row, column];
-							if(B.Count == 0 && C.Count == 0)
+
+							i1--;
+							i2++;
+							j2--;
+
+							if (B.Count == 0 && C.Count == 0)
 							{
 
 							}
@@ -85,9 +97,6 @@ namespace CYKAlgorithm
 									select new CYKNode(p, d)
 									);
 							}
-							i1--;
-							i2++;
-							j2--;
 						}
 					}
 				}

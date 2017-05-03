@@ -1,4 +1,6 @@
-﻿namespace CYKAlgorithm
+﻿using System;
+
+namespace CYKAlgorithm
 {
 	public class CNFProduction
 	{
@@ -15,25 +17,25 @@
 
 		public CNFProduction(string Target, string Text, bool IsTerminal = true)
 		{
-			this.Target = Target;
+			this.Target = Target ?? throw new ArgumentNullException(nameof(Target));
 
 			if (IsTerminal)
 			{
 				this.Type = ProductionType.OneTerminal;
-				this.Terminal = Text;
+				this.Terminal = Text ?? throw new ArgumentNullException(nameof(Text));
 			}
 			else
 			{
 				this.Type = ProductionType.OneNonterminal;
-				this.Single = Text;
+				this.Single = Text ?? throw new ArgumentNullException(nameof(Text));
 			}
 		}
 		public CNFProduction(string Target, string Head, string Tail)
 		{
 			this.Type = ProductionType.TwoNonterminals;
-			this.Target = Target;
-			this.Head = Head;
-			this.Tail = Tail;
+			this.Target = Target ?? throw new ArgumentNullException(nameof(Target));
+			this.Head = Head ?? throw new ArgumentNullException(nameof(Head));
+			this.Tail = Tail ?? throw new ArgumentNullException(nameof(Tail));
 		}
 		public override string ToString()
 		{
