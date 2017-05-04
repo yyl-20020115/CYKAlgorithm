@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CYKAlgorithm
@@ -41,21 +42,25 @@ namespace CYKAlgorithm
 
 		public CYKNode(CNFProduction Production, CYKNode HeadNode, CYKNode TailNode, long Offset = 0L)
 		{
-			this.Production = Production;
-			this.HeadNode = HeadNode;
-			this.TailNode = TailNode;
+			this.Production = Production ?? throw new ArgumentNullException(nameof(Production));
+			this.HeadNode = HeadNode ?? throw new ArgumentNullException(nameof(HeadNode));
+			this.TailNode = TailNode ?? throw new ArgumentNullException(nameof(TailNode));
 			this.Offset = Offset;
 		}
 		public CYKNode(CNFProduction Production, CYKNode SingleNode, long Offset = 0L)
 		{
-			this.Production = Production;
-			this.SingleNode = SingleNode;
+			this.Production = Production ?? throw new ArgumentNullException(nameof(Production));
+			this.SingleNode = SingleNode ?? throw new ArgumentNullException(nameof(SingleNode));
 			this.Offset = Offset;
 		}
 		public CYKNode(CNFProduction Production, long Offset = 0L)
 		{
-			this.Production = Production;
+			this.Production = Production ?? throw new ArgumentNullException(nameof(Production));
 			this.Offset = Offset;
+		}
+		public override string ToString()
+		{
+			return this.Production.ToString();
 		}
 	}
 }

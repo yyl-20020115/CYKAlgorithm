@@ -29,7 +29,7 @@ namespace CYKAlgorithm
 
 			string Input = "baaba";
 
-			//while ((Input = Console.ReadLine()) != null && Input.Length > 0)
+			while ((Input = Console.ReadLine()) != null && Input.Length > 0)
 			{
 				var ret = CYK.Parse(Input, Productions);
 				if (ret.Accepted)
@@ -41,7 +41,6 @@ namespace CYKAlgorithm
 					Console.WriteLine("Input is rejected");
 				}
 			}
-			Console.ReadKey();
 		}
 	}
 }

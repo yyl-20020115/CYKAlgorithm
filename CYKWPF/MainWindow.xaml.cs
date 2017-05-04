@@ -33,6 +33,8 @@ namespace CYKWPF
 		protected CYKStepper stepper = null;
 		protected TextBlock[,] blocks = null;
 
+		public virtual string Input { get; set; } = "baaba";
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -40,12 +42,50 @@ namespace CYKWPF
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			var ret = CYK.Parse("baaba", this.Productions);
+			var ret = CYK.Parse(this.Input, this.Productions);
 
 			if (ret.Accepted)
 			{
 				this.BuildGrid(ret.Matrix);
+				this.BuildTree(ret.Nodes);
 			}
+		}
+		protected virtual void BuildTree(List<CYKNode> Nodes)
+		{
+			if (Nodes != null)
+			{
+				this.MyTree.Items.Clear();
+
+				foreach(CYKNode node in Nodes)
+				{
+					this.MyTree.Items.Add(this.BuildTreeItem(node));
+				}
+			}
+		}
+		protected virtual TreeViewItem BuildTreeItem(CYKNode node)
+		{
+			TreeViewItem item = null;
+
+			if (node != null)
+			{
+			    item = new TreeViewItem() { Header = node.ToString(), Tag = node };
+
+				switch (node.Type)
+				{
+					case ProductionType.OneTerminal:
+						item.Items.Add(new TreeViewItem { Header = node.Terminal, Tag = node });
+						break;
+					case ProductionType.OneNonterminal:
+						item.Items.Add(this.BuildTreeItem(node.SingleNode));
+						break;
+					case ProductionType.TwoNonterminals:
+						item.Items.Add(this.BuildTreeItem(node.HeadNode));
+						item.Items.Add(this.BuildTreeItem(node.TailNode));
+						break;
+				}
+
+			}
+			return item;
 		}
 		protected virtual void BuildGrid(List<CYKNode>[,] matrix)
 		{
@@ -75,6 +115,7 @@ namespace CYKWPF
 						string text = string.Join(" ", nodes.Select(n => n.Target));
 
 						TextBlock block = new TextBlock() { Text = text };
+
 						block.Background = Brushes.LightGray;
 
 						this.blocks[row, column] = block;
@@ -101,7 +142,7 @@ namespace CYKWPF
 			{
 				this.stepper = new CYKStepper();
 
-				this.BuildGrid(this.stepper.Init("baaba", this.Productions));
+				this.BuildGrid(this.stepper.Init(this.Input, this.Productions));
 
 			}
 			else
@@ -110,8 +151,11 @@ namespace CYKWPF
 				{
 					var ret = this.stepper.GetResult();
 
+					if (ret.Accepted)
+					{
+						this.BuildTree(ret.Nodes);
+					}
 					MessageBox.Show("Accepted = " + ret.Accepted);
-
 
 				}
 			}
