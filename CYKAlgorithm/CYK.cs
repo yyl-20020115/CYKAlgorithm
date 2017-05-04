@@ -33,7 +33,7 @@ namespace CYKAlgorithm
 
 				for (int row = 0; row < InputLength; row++)
 				{
-					for (int column = 0; column < InputLength; column++)
+					for (int column = 0; column < InputLength - row; column++)
 					{
 						Matrix[row, column] = new List<CYKNode>();
 

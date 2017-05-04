@@ -108,7 +108,7 @@ namespace CYKWPF
 
 				for (int row = 0; row < matrix.GetLength(0); row++)
 				{
-					for (int column = 0; column < matrix.GetLength(1); column++)
+					for (int column = 0; column < matrix.GetLength(1) - row; column++)
 					{
 						List<CYKNode> nodes = matrix[row, column];
 
@@ -195,7 +195,7 @@ namespace CYKWPF
 			{
 				for (int row = 0; row < blocks.GetLength(0); row++)
 				{
-					for (int column = 0; column < blocks.GetLength(1); column++)
+					for (int column = 0; column < blocks.GetLength(1) - row; column++)
 					{
 
 						TextBlock block = this.blocks[row, column];

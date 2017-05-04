@@ -93,7 +93,7 @@ namespace CYKAlgorithm
 
 			for (int row = 0; row < this.inputLength; row++)
 			{
-				for (int column = 0; column < this.inputLength; column++)
+				for (int column = 0; column < this.inputLength - row; column++)
 				{
 					this.matrix[row, column] = new List<CYKNode>();
 
