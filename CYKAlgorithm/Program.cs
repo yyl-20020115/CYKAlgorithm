@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,11 +27,11 @@ namespace CYKAlgorithm
 				new CNFProduction("C","a")
 			};
 
-			string Input = "b a a b a";
+			string Input = "baaba";
 
 			//while ((Input = Console.ReadLine()) != null && Input.Length > 0)
 			{
-				var ret = CYK.Parse(Input.Split(' '), Productions);
+				var ret = CYK.Parse(Input, Productions);
 				if (ret.Accepted)
 				{
 					Console.WriteLine("Input is accepted");

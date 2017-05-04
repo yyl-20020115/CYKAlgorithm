@@ -5,9 +5,21 @@ namespace CYKAlgorithm
 {
 	public class CYK
 	{
-		public static (List<CYKNode> Nodes, bool Accepted) Parse(string[] Input, List<CNFProduction> Productions)
+		public static (List<CYKNode>[,] Matrix,List<CYKNode> Nodes, bool Accepted) Parse(string Input, List<CNFProduction> Productions)
 		{
-			(List<CYKNode> Nodes, bool Accepted) ret = (null, false);
+			return Parse(Input?.ToCharArray(), Productions);
+		}
+		public static (List<CYKNode>[,] Matrix, List<CYKNode> Nodes, bool Accepted) Parse(IEnumerable<char> Input, List<CNFProduction> Productions)
+		{
+			return Parse(Input?.Select(c=>c.ToString()), Productions);
+		}
+		public static (List<CYKNode>[,] Matrix, List<CYKNode> Nodes, bool Accepted) Parse(IEnumerable<string> Input, List<CNFProduction> Productions)
+		{
+			return Parse(Input?.ToArray(), Productions);
+		}
+		public static (List<CYKNode>[,] Matrix, List<CYKNode> Nodes, bool Accepted) Parse(string[] Input, List<CNFProduction> Productions)
+		{
+			(List<CYKNode>[,] Matrix,List<CYKNode> Nodes, bool Accepted) ret = (null,null, false);
 
 			if ((Input != null && Input.Length > 0) && Productions != null && Productions.Count > 0)
 			{
@@ -16,6 +28,8 @@ namespace CYKAlgorithm
 				int InputLength = Input.Length;
 
 				List<CYKNode>[,] Matrix = new List<CYKNode>[InputLength, InputLength];
+
+				ret.Matrix = Matrix;
 
 				for (int row = 0; row < InputLength; row++)
 				{

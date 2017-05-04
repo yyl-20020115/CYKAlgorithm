@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CYKAlgorithm
 {
@@ -21,7 +18,6 @@ namespace CYKAlgorithm
 				{
 					if (Production.Tokens != null && Production.Tokens.Length > 0)
 					{
-
 						Queue<string> Nonterminals = new Queue<string>();
 						Dictionary<string, string> Terminals = new Dictionary<string, string>();
 
@@ -39,10 +35,6 @@ namespace CYKAlgorithm
 							{
 								Nonterminals.Enqueue(Token.Text);
 							}
-						}
-						foreach (var p in Terminals)
-						{
-							Ret.Add(new CNFProduction(p.Value, p.Key, true));
 						}
 
 						if (Nonterminals.Count > 0)
@@ -69,6 +61,10 @@ namespace CYKAlgorithm
 									H = N;
 								}
 							}
+						}
+						foreach (var p in Terminals)
+						{
+							Ret.Add(new CNFProduction(p.Value, p.Key, true));
 						}
 					}
 				}

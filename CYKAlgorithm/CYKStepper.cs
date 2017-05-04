@@ -1,24 +1,19 @@
-﻿using CYKAlgorithm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CYKWPF
+namespace CYKAlgorithm
 {
 	public class CYKStepper : CYK
 	{
 		public delegate void StepReport
 		(
-			int row,
-			int column,
-			int i1,
-			int j1,
-			int i2,
-			int j2,
-			List<CYKNode> B,
-			List<CYKNode> C,
-			List<CYKNode> M
+			(List<CYKNode> L, int row, int column) M,
+			(List<CYKNode> L, int row, int column) B,
+			(List<CYKNode> L, int row, int column) C
 		);
+
+		protected bool done = false;
 
 		protected int row = 0;
 
@@ -66,12 +61,26 @@ namespace CYKWPF
 
 		public virtual List<CNFProduction> Productions => this.productions;
 
+		public virtual bool IsDone => this.done;
+
 		public CYKStepper()
 		{
 
 		}
 
-		public virtual void Init(string[] Input, List<CNFProduction> Productions)
+		public virtual List<CYKNode>[,] Init(string Input, List<CNFProduction> Productions)
+		{
+			return Init(Input?.ToCharArray(), Productions);
+		}
+		public virtual List<CYKNode>[,] Init(IEnumerable<char> Input, List<CNFProduction> Productions)
+		{
+			return Init(Input?.Select(c => c.ToString()), Productions);
+		}
+		public virtual List<CYKNode>[,] Init(IEnumerable<string> Input, List<CNFProduction> Productions)
+		{
+			return Init(Input?.ToArray(), Productions);
+		}
+		public virtual List<CYKNode>[,] Init(string[] Input, List<CNFProduction> Productions)
 		{
 			this.productions = Productions ?? throw new ArgumentNullException(nameof(Productions));
 			if (this.productions.Count == 0) throw new ArgumentException("productions count can not be zero", nameof(Productions));
@@ -80,24 +89,24 @@ namespace CYKWPF
 
 			this.offset = 0L;
 
-			this.matrix = new List<CYKNode>[InputLength, InputLength];
+			this.matrix = new List<CYKNode>[this.inputLength, this.inputLength];
 
-			for (int row = 0; row < InputLength; row++)
+			for (int row = 0; row < this.inputLength; row++)
 			{
-				for (int column = 0; column < InputLength; column++)
+				for (int column = 0; column < this.inputLength; column++)
 				{
-					Matrix[row, column] = new List<CYKNode>();
+					this.matrix[row, column] = new List<CYKNode>();
 
 					if (row == 0)
 					{
-						Matrix[row, column].AddRange(
-							from p in Productions
+						this.matrix[row, column].AddRange(
+							from p in this.productions
 							where p.Type == ProductionType.OneTerminal
 							&& p.Terminal == Input[column]
 							select new CYKNode(p,
 								(offset += Input[column].Length) - Input[column].Length)
 						);
-						if (Matrix[row, column].Count == 0)
+						if (this.matrix[row, column].Count == 0)
 						{
 							throw new InvalidOperationException($"{Input[column]} is not a valid terminal");
 						}
@@ -115,47 +124,70 @@ namespace CYKWPF
 			this.j2 = this.row + this.column;
 
 			this.cx = 0;
+
+			this.done = false;
+
+			return this.matrix;
 		}
 
-		public virtual bool NextStep(StepReport report = null)
+		public virtual bool Step(StepReport report = null)
+		{
+			if (this.matrix == null) throw new InvalidOperationException("call init first");
+			if (this.done) return false;
+
+			this.Reduce(report);
+
+			this.i1--;
+			this.i2++;
+			this.j2--;
+
+			this.cx++;
+
+			if (this.cx >= this.row)
+			{
+				this.cx = 0;
+
+				this.column++;
+
+				this.UpdateIJ();
+
+			}
+
+			if (this.column >= this.inputLength - this.row)
+			{
+				this.column = 0;
+
+				this.row++;
+
+				this.UpdateIJ();
+			}
+
+			if (this.row >= this.inputLength)
+			{
+				this.done = true;
+
+				return false;
+			}
+
+
+			return true;
+		}
+		protected virtual void UpdateIJ()
+		{
+			this.i1 = this.row - 1;
+			this.j1 = this.column;
+
+			this.i2 = 0;
+			this.j2 = this.row + this.column;
+		}
+
+		protected virtual void Reduce(StepReport report)
 		{
 			if (this.matrix != null)
 			{
-				this.StepAction(report);
-
-				if (++this.cx == this.row)
-				{
-					this.cx = 0;
-
-					if (++this.column == this.InputLength - this.row)
-					{
-						this.column = 0;
-
-						if (++this.row == this.InputLength)
-						{
-							//done
-							return false;
-						}
-						this.i1 = this.row - 1;
-						this.j1 = this.column;
-
-						this.i2 = 0;
-						this.j2 = this.row + this.column;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-
-		protected virtual void StepAction(StepReport report)
-		{
-			if (this.Matrix != null)
-			{
-				List<CYKNode> B = Matrix[this.i1, this.j1];
-				List<CYKNode> C = Matrix[this.i2, this.j2];
-				List<CYKNode> M = Matrix[this.row, this.column];
-
+				List<CYKNode> B = this.matrix[this.i1, this.j1];
+				List<CYKNode> C = this.matrix[this.i2, this.j2];
+				List<CYKNode> M = this.matrix[this.row, this.column];
 
 				if (B.Count == 0 && C.Count == 0)
 				{
@@ -166,7 +198,7 @@ namespace CYKWPF
 					M.AddRange(
 						from b in B
 						from c in C
-						from p in Productions
+						from p in this.productions
 						where
 						p.Type == ProductionType.TwoNonterminals
 						&& p.Head == b.Target
@@ -179,31 +211,27 @@ namespace CYKWPF
 					List<CYKNode> D = B.Count > 0 ? B : C;
 					M.AddRange(
 						from d in D
-						from p in Productions
+						from p in this.productions
 						where
 						p.Type == ProductionType.OneNonterminal
 						&& p.Single == d.Target
 						select new CYKNode(p, d)
 						);
 				}
-				report?.Invoke(this.row, this.column, this.i1, this.j1, this.i2, this.j2, B, C, M);
-
-				this.i1--;
-				this.i2++;
-				this.j2--;
+				report?.Invoke((M,this.row, this.column),(B, this.i1, this.j1),(C, this.i2, this.j2));
 			}
 		}
 
-		public virtual (List<CYKNode> Nodes, bool Accepted) GetResult()
+		public virtual (List<CYKNode>[,] Matrix,List<CYKNode> Nodes, bool Accepted) GetResult()
 		{
-			(List<CYKNode> Nodes, bool Accepted) ret =
-				(null, false);
+			(List<CYKNode>[,] Matrix,List<CYKNode> Nodes, bool Accepted) ret = (this.matrix, null, false);
+
 			if (this.matrix != null)
 			{
-				ret.Nodes = Matrix[InputLength - 1, 0];
+				ret.Nodes = this.matrix[this.inputLength - 1, 0];
 
 				if (ret.Nodes
-					.Any(node => node.Production == this.Productions[0]))
+					.Any(node => node.Production == this.productions[0]))
 				{
 					ret.Accepted = true;
 				}

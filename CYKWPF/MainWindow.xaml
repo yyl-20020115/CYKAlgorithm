@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
-        
+        <Grid ShowGridLines="True" Name="MyGrid" HorizontalAlignment="Left" Height="299" Margin="10,10,0,0" VerticalAlignment="Top" Width="340"/>
+        <Button Click="Button_Click" Content="Step" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="75"/>
+
     </Grid>
 </Window>

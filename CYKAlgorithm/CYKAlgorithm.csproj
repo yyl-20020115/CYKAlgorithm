@@ -48,6 +48,7 @@
     <Compile Include="CNFConverter.cs" />
     <Compile Include="CYK.cs" />
     <Compile Include="CYKNode.cs" />
+    <Compile Include="CYKStepper.cs" />
     <Compile Include="Production.cs" />
     <Compile Include="ProductionType.cs" />
     <Compile Include="Program.cs" />
