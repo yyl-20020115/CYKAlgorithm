@@ -4,6 +4,7 @@ using System.Windows;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System;
 
 namespace CYKWPF
 {
@@ -33,7 +34,7 @@ namespace CYKWPF
 		protected CYKStepper stepper = null;
 		protected TextBlock[,] blocks = null;
 
-		public virtual string Input { get; set; } = "baaba";
+		public virtual string Input => MyText.Text;
 
 		public MainWindow()
 		{
@@ -103,7 +104,7 @@ namespace CYKWPF
 				}
 				for (int column = 0; column < matrix.GetLength(1); column++)
 				{
-					this.MyGrid.ColumnDefinitions.Add(new ColumnDefinition());
+					this.MyGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1.0, GridUnitType.Star) });
 				}
 
 				for (int row = 0; row < matrix.GetLength(0); row++)
@@ -141,9 +142,16 @@ namespace CYKWPF
 			if(this.stepper == null)
 			{
 				this.stepper = new CYKStepper();
+				try
+				{
+					this.BuildGrid(this.stepper.Init(this.Input, this.Productions));
+				}
+				catch(Exception ex)
+				{
+					MessageBox.Show(ex.Message);
 
-				this.BuildGrid(this.stepper.Init(this.Input, this.Productions));
-
+					this.stepper = null;
+				}
 			}
 			else
 			{
