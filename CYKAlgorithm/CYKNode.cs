@@ -10,7 +10,7 @@ namespace CYKAlgorithm
 
 		public virtual CNFProduction Production { get; protected set; }
 
-		public virtual ProductionType Type => this.Production != null ? this.Production.Type : ProductionType.Unknown;
+		public virtual CNFProductionType Type => this.Production != null ? this.Production.Type : CNFProductionType.Unknown;
 
 		public virtual string Terminal => this.Production?.Terminal;
 
@@ -28,15 +28,15 @@ namespace CYKAlgorithm
 		public virtual CYKNode SingleNode { get; protected set; } = null;
 
 		public virtual CNFProduction GetHead(List<CNFProduction> Productions)
-			=> this.Type == ProductionType.TwoNonterminals && Productions != null
+			=> this.Type == CNFProductionType.TwoNonterminals && Productions != null
 			? (from p in Productions where p.Target == this.Head select p).FirstOrDefault()
 			: null;
 		public virtual CNFProduction GetTail(List<CNFProduction> Productions)
-			=> this.Type == ProductionType.TwoNonterminals && Productions != null
+			=> this.Type == CNFProductionType.TwoNonterminals && Productions != null
 			? (from p in Productions where p.Target == this.Tail select p).FirstOrDefault()
 			: null;
 		public virtual CNFProduction GetSingle(List<CNFProduction> Productions)
-			=> this.Type == ProductionType.OneNonterminal && Productions != null
+			=> this.Type == CNFProductionType.OneNonterminal && Productions != null
 			? (from p in Productions where p.Target == this.Single select p).FirstOrDefault()
 			: null;
 

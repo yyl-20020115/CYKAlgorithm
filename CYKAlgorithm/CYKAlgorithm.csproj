@@ -49,8 +49,8 @@
     <Compile Include="CYK.cs" />
     <Compile Include="CYKNode.cs" />
     <Compile Include="CYKStepper.cs" />
-    <Compile Include="Production.cs" />
-    <Compile Include="ProductionType.cs" />
+    <Compile Include="CNFProduction.cs" />
+    <Compile Include="CNFProductionType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

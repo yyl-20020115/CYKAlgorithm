@@ -73,13 +73,13 @@ namespace CYKWPF
 
 				switch (node.Type)
 				{
-					case ProductionType.OneTerminal:
+					case CNFProductionType.OneTerminal:
 						item.Items.Add(new TreeViewItem { Header = node.Terminal, Tag = node });
 						break;
-					case ProductionType.OneNonterminal:
+					case CNFProductionType.OneNonterminal:
 						item.Items.Add(this.BuildTreeItem(node.SingleNode));
 						break;
-					case ProductionType.TwoNonterminals:
+					case CNFProductionType.TwoNonterminals:
 						item.Items.Add(this.BuildTreeItem(node.HeadNode));
 						item.Items.Add(this.BuildTreeItem(node.TailNode));
 						break;

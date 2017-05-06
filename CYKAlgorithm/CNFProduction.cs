@@ -4,7 +4,7 @@ namespace CYKAlgorithm
 {
 	public class CNFProduction
 	{
-		public virtual ProductionType Type { get; protected set; } = ProductionType.Unknown;
+		public virtual CNFProductionType Type { get; protected set; } = CNFProductionType.Unknown;
 		public virtual string Target { get; protected set; } = string.Empty;
 
 		public virtual string Head { get; protected set; } = string.Empty;
@@ -21,33 +21,33 @@ namespace CYKAlgorithm
 
 			if (IsTerminal)
 			{
-				this.Type = ProductionType.OneTerminal;
+				this.Type = CNFProductionType.OneTerminal;
 				this.Terminal = Text ?? throw new ArgumentNullException(nameof(Text));
 			}
 			else
 			{
-				this.Type = ProductionType.OneNonterminal;
+				this.Type = CNFProductionType.OneNonterminal;
 				this.Single = Text ?? throw new ArgumentNullException(nameof(Text));
 			}
 		}
 		public CNFProduction(string Target, string Head, string Tail)
 		{
-			this.Type = ProductionType.TwoNonterminals;
+			this.Type = CNFProductionType.TwoNonterminals;
 			this.Target = Target ?? throw new ArgumentNullException(nameof(Target));
 			this.Head = Head ?? throw new ArgumentNullException(nameof(Head));
 			this.Tail = Tail ?? throw new ArgumentNullException(nameof(Tail));
 		}
 		public override string ToString()
 		{
-			if (this.Type == ProductionType.OneTerminal)
+			if (this.Type == CNFProductionType.OneTerminal)
 			{
 				return this.Target + " = \"" + this.Terminal + "\"";
 			}
-			else if (this.Type == ProductionType.TwoNonterminals)
+			else if (this.Type == CNFProductionType.TwoNonterminals)
 			{
 				return this.Target + " = " + this.Head + " " + this.Tail;
 			}
-			else if(this.Type == ProductionType.OneNonterminal)
+			else if(this.Type == CNFProductionType.OneNonterminal)
 			{
 				return this.Target + " = " + this.Single;
 			}

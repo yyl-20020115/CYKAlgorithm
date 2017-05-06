@@ -41,7 +41,7 @@ namespace CYKAlgorithm
 						{
 							Matrix[row, column].AddRange(
 								from p in Productions
-								where p.Type == ProductionType.OneTerminal
+								where p.Type == CNFProductionType.OneTerminal
 								&& p.Terminal == Input[column]
 								select new CYKNode(p,
 									(offset += Input[column].Length) - Input[column].Length)
@@ -93,7 +93,7 @@ namespace CYKAlgorithm
 									from c in C
 									from p in Productions
 									where
-									p.Type == ProductionType.TwoNonterminals
+									p.Type == CNFProductionType.TwoNonterminals
 									&& p.Head == b.Target
 									&& p.Tail == c.Target
 									select new CYKNode(p, b, c)
@@ -106,7 +106,7 @@ namespace CYKAlgorithm
 									from d in D
 									from p in Productions
 									where
-									p.Type == ProductionType.OneNonterminal
+									p.Type == CNFProductionType.OneNonterminal
 									&& p.Single == d.Target
 									select new CYKNode(p, d)
 									);

@@ -1,6 +1,6 @@
 ﻿namespace CYKAlgorithm
 {
-	public enum ProductionType
+	public enum CNFProductionType
 	{
 		Unknown = 0,
 		OneTerminal =1,
